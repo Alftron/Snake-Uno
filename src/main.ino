@@ -109,7 +109,7 @@ void loop()
 
     while (gameRunning)
     {
-
+        // Our game has started!
     }
 
 }
