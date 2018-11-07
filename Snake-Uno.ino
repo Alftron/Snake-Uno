@@ -17,16 +17,21 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 // Globals
 bool gameRunning;
+int snakeHeadX;
+int snakeHeadY;
 
 void setup()
 {
-  Serial.begin(9600);
-  Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
-  tft.reset();
-  tft.begin(LCDIDENTIFIER);
-  tft.setRotation(LANDSCAPE_USBL);
-  gameRunning = false;
-  drawMainMenu();
+    Serial.begin(9600);
+    Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
+    tft.reset();
+    tft.begin(LCDIDENTIFIER);
+    tft.setRotation(LANDSCAPE_USBL);
+    gameRunning = false;
+    drawMainMenu();
+    // Set where our snake will be starting
+    snakeHeadX = tft.width()/2;
+    snakeHeadY = tft.height()/2;
 }
 
 void loop()
@@ -69,6 +74,7 @@ void loop()
     while (gameRunning)
     {
         // Our game has started!
+        pollSnakePos();
     }
 
 }
@@ -77,6 +83,8 @@ void drawGameBoard()
 {
     tft.fillScreen(BLACK);
     tft.drawRect(0,0,320,240,WHITE);
+    // Draw the snake starting in the middle of the screen
+    tft.fillRect(snakeHeadX,snakeHeadY,SNAKEHEADSIZE,SNAKEHEADSIZE,WHITE);
 }
 
 void drawMainMenu()
@@ -85,4 +93,9 @@ void drawMainMenu()
     // create buttons
     startButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Start!", BUTTON_TEXTSIZE);
     startButton.drawButton();
+}
+
+void pollSnakePos()
+{
+    
 }

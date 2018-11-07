@@ -39,3 +39,6 @@
 #define TS_MAXX 920
 #define TS_MINY 120
 #define TS_MAXY 900
+
+// Snake defines
+#define SNAKEHEADSIZE 10
