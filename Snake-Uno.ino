@@ -16,10 +16,12 @@ Elegoo_GFX_Button startButton, resetButton;
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 // Globals
-bool gameRunning;
-int snakeHeadX;
-int snakeHeadY;
-int velocity = 1;
+bool g_screenDrawn = false;
+bool g_gameRunning = false;
+bool g_gameOver = false;
+int g_snakeHeadX;
+int g_snakeHeadY;
+int g_velocity = 1;
 
 void setup()
 {
@@ -28,18 +30,18 @@ void setup()
     tft.reset();
     tft.begin(LCDIDENTIFIER);
     tft.setRotation(LANDSCAPE_USBL);
-    gameRunning = false;
+    g_gameRunning = false;
     drawMainMenu();
     // Set where our snake will be starting
-    snakeHeadX = tft.width()/2;
-    snakeHeadY = tft.height()/2;
+    g_snakeHeadX = tft.width()/2;
+    g_snakeHeadY = tft.height()/2;
 }
 
 void loop()
 {
-    while (!gameRunning)
-        // Waiting for our game to start by pressing the start button
+    while (!g_gameRunning && !g_gameOver)
     {
+        // START SCREEN
         TSPoint p = ts.getPoint();
         // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
         pinMode(XM, OUTPUT);
@@ -65,14 +67,23 @@ void loop()
             Serial.println("Start button pressed!");
             startButton.drawButton(true);
             delay(100);
-            gameRunning = true;
-            drawGameBoard();
+            g_gameRunning = true;
         }
     }
 
-    while (gameRunning)
+    while (!g_gameRunning && g_gameOver)
     {
-        // Our game has started!
+        // GAME OVER SCREEN
+        drawGameOver();
+    }
+
+    while (g_gameRunning)
+    {
+        // GAME SCREEN
+        if (!g_screenDrawn)
+        {
+            drawGameBoard();
+        }
         pollSnakePos();
     }
 
@@ -83,7 +94,13 @@ void drawGameBoard()
     tft.fillScreen(BLACK);
     tft.drawRect(0,0,320,240,WHITE);
     // Draw the snake starting in the middle of the screen
-    tft.fillRect(snakeHeadX, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    g_screenDrawn = true;
+}
+
+void drawGameOver()
+{
+
 }
 
 void drawMainMenu()
@@ -96,10 +113,10 @@ void drawMainMenu()
 
 void pollSnakePos()
 {
-    snakeHeadX += velocity;
-    Serial.println (snakeHeadX);
+    g_snakeHeadX += g_velocity;
+    Serial.println (g_snakeHeadX);
     // Move our snake horizontally
-    tft.fillRect(snakeHeadX, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
     // Erase path behind the snake horizontally
-    tft.fillRect((snakeHeadX-SNAKEHEADSIZE)-velocity, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-g_velocity, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
 }
