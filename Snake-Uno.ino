@@ -43,9 +43,9 @@ void loop()
     {
         // START SCREEN
         TSPoint p = ts.getPoint();
-        // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
-        pinMode(XM, OUTPUT);
-        pinMode(YP, OUTPUT);
+        // We should be able to remove the two below lines now that the library should clean up pins behind the scenes
+        //pinMode(XM, OUTPUT);
+        //pinMode(YP, OUTPUT);
         if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
         {
             // scale from 0->1023 to tft.width
@@ -67,6 +67,10 @@ void loop()
             Serial.println("Start button pressed!");
             startButton.drawButton(true);
             delay(100);
+            while (ts.isTouching())
+            {
+                // Loop here aimlessly if we're holding the start button
+            }
         }
 
         if (startButton.justReleased())
