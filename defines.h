@@ -42,3 +42,4 @@
 
 // Snake defines
 #define SNAKEHEADSIZE 10
+#define MAXVELOCITY 10

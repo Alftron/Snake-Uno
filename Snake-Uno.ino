@@ -19,6 +19,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 bool gameRunning;
 int snakeHeadX;
 int snakeHeadY;
+int velocity = 1;
 
 void setup()
 {
@@ -97,5 +98,10 @@ void drawMainMenu()
 
 void pollSnakePos()
 {
-    
+    snakeHeadX += velocity;
+    Serial.println (snakeHeadX);
+    // Move our snake horizontally
+    tft.fillRect(snakeHeadX, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    // Erase path behind the snake horizontally
+    tft.fillRect((snakeHeadX-SNAKEHEADSIZE)-velocity, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
 }
