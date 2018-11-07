@@ -1,10 +1,10 @@
 // Touch screen library with X Y and Z (pressure) readings as well
 // as oversampling to avoid 'bouncing'
-// (c) ladyada / Elegoo
+// (c) ladyada / adafruit
 // Code under MIT License
 
-#ifndef _ELEGOO_TOUCHSCREEN_H_
-#define _ELEGOO_TOUCHSCREEN_H_
+#ifndef _ADAFRUIT_TOUCHSCREEN_H_
+#define _ADAFRUIT_TOUCHSCREEN_H_
 #include <stdint.h>
 
 class TSPoint {
@@ -25,14 +25,25 @@ class TouchScreen {
 
   bool isTouching(void);
   uint16_t pressure(void);
-  int readTouchY();
-  int readTouchX();
+  uint16_t readTouchY();
+  uint16_t readTouchX();
   TSPoint getPoint();
   int16_t pressureThreshhold;
 
 private:
+  //Input pins
   uint8_t _yp, _ym, _xm, _xp;
-  uint16_t _rxplate;
+	#if defined(__arm__)
+	//No port manipulation in DUE and ARM boards
+	#elde
+		//Input pins port registers
+		uint8_t xp_port, yp_port, xm_port, ym_port;
+		//Input pins converted to mask
+		uint8_t xp_pin, yp_pin, xm_pin ,ym_pin;
+	#endif
+	uint16_t _rxplate;
+  //Internal cleanup function
+  void cleanPins(void);
 };
 
 #endif

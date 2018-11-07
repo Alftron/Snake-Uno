@@ -67,6 +67,10 @@ void loop()
             Serial.println("Start button pressed!");
             startButton.drawButton(true);
             delay(100);
+            while (ts.isTouching)
+            {
+
+            }
         }
 
         if (startButton.justReleased())
