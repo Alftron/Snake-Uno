@@ -104,7 +104,43 @@ void drawGameBoard()
 
 void drawGameOver()
 {
+    tft.fillScreen(BLACK);
+    // create buttons
+    resetButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Restart?", BUTTON_TEXTSIZE);
+    resetButton.drawButton();
 
+    // START SCREEN
+    TSPoint p = ts.getPoint();
+    // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
+    pinMode(XM, OUTPUT);
+    pinMode(YP, OUTPUT);
+    if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
+    {
+        // scale from 0->1023 to tft.width
+        p.x = (tft.width() - map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
+        p.y = (tft.height()-map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
+    }
+
+    if (resetButton.contains(p.x, p.y))
+    {
+        resetButton.press(true);
+    }
+    else
+    {
+        resetButton.press(false);
+    }
+
+    if (resetButton.justPressed())
+    {
+        Serial.println("Reset button pressed!");
+        resetButton.drawButton(true);
+        delay(100);
+    }
+
+    if (resetButton.justReleased())
+    {
+        g_gameRunning = true;
+    }
 }
 
 void drawMainMenu()
