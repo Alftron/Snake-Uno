@@ -1,3 +1,14 @@
+/* Calibration Values
+These were obtained from a calibration sketch, we should probably use these at some point
+PORTRAIT CALIBRATION     240 x 320
+x = map(p.x, LEFT=919, RT=108, 0, 240)
+y = map(p.y, TOP=71, BOT=908, 0, 320)
+Touch Pin Wiring XP=8 XM=A2 YP=A3 YM=9
+LANDSCAPE CALIBRATION    320 x 240
+x = map(p.y, LEFT=71, RT=908, 0, 320)
+y = map(p.x, TOP=108, BOT=919, 0, 240)
+*/
+
 // Pin defines
 // These are the pins for the shield!
 #define YP A3  // must be an analog pin, use "An" notation!
