@@ -67,6 +67,10 @@ void loop()
             Serial.println("Start button pressed!");
             startButton.drawButton(true);
             delay(100);
+        }
+
+        if (startButton.justReleased())
+        {
             g_gameRunning = true;
         }
     }
