@@ -40,9 +40,7 @@ void loop()
     while (!gameRunning)
         // Waiting for our game to start by pressing the start button
     {
-        //digitalWrite(13, HIGH);
         TSPoint p = ts.getPoint();
-        //digitalWrite(13, LOW);
         // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
         pinMode(XM, OUTPUT);
         pinMode(YP, OUTPUT);
@@ -85,7 +83,7 @@ void drawGameBoard()
     tft.fillScreen(BLACK);
     tft.drawRect(0,0,320,240,WHITE);
     // Draw the snake starting in the middle of the screen
-    tft.fillRect(snakeHeadX,snakeHeadY,SNAKEHEADSIZE,SNAKEHEADSIZE,WHITE);
+    tft.fillRect(snakeHeadX, snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
 }
 
 void drawMainMenu()
