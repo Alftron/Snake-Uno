@@ -116,17 +116,14 @@ void pollGameOver()
         delay(100);
         while (ts.isTouching())
         {
-            // Loop here aimlessly if we're holding the start button
+            // Loop here aimlessly if we're holding the reset button
         }
         
     }
 
     if (resetButton.justReleased())
     {
-        // Force a game screen redraw
-        g_screenDrawn = false;
-        g_gameRunning = true;
-        resetSnakePos();
+        restartGame();
     }
 }
 
@@ -191,4 +188,13 @@ void resetSnakePos()
     // Set where our snake will be starting
     g_snakeHeadX = tft.width()/2;
     g_snakeHeadY = tft.height()/2;
+}
+
+void restartGame();
+{
+    // A little function we can use to easily restart the game
+    // Force a game screen redraw
+    g_screenDrawn = false;
+    g_gameRunning = true;
+    resetSnakePos();
 }
