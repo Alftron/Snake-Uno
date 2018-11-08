@@ -35,7 +35,7 @@ private:
   uint8_t _yp, _ym, _xm, _xp;
 	#if defined(__arm__)
 	//No port manipulation in DUE and ARM boards
-	#elde
+	#else
 		//Input pins port registers
 		uint8_t xp_port, yp_port, xm_port, ym_port;
 		//Input pins converted to mask

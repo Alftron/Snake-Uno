@@ -366,7 +366,7 @@ void TouchScreen::cleanPins(void) {
 		pinMode(_yp, OUTPUT);
 		*portOutputRegister(yp_port) |= yp_pin;
 		pinMode(_ym, OUTPUT);
-		*portOutputRegister(ym_port) &= ~ym_pin
+		*portOutputRegister(ym_port) &= ~ym_pin;
 		pinMode(_xp, OUTPUT);
 		*portOutputRegister(xp_port) |= xp_pin;
 	#endif
