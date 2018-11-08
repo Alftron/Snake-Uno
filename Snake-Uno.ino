@@ -23,6 +23,16 @@ int g_snakeHeadX;
 int g_snakeHeadY;
 int g_velocity = 1;
 
+// Functions
+void drawGameBoard();
+void drawGameOver();
+void drawMainMenu();
+void pollGameOver();
+void pollMainMenu();
+void pollSnakePos();
+void resetSnakePos();
+void restartGame();
+
 void setup()
 {
     Serial.begin(9600);
@@ -157,6 +167,7 @@ void pollMainMenu()
             g_gameRunning = true;
         }
 }
+
 void pollSnakePos()
 {
     g_snakeHeadX += g_velocity;
@@ -184,7 +195,7 @@ void resetSnakePos()
     g_snakeHeadY = tft.height()/2;
 }
 
-void restartGame();
+void restartGame()
 {
     // A little function we can use to easily restart the game
     // Force a game screen redraw
