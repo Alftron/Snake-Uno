@@ -41,11 +41,99 @@ void loop()
 {
     while (!g_gameRunning && !g_gameOver)
     {
+        pollMainMenu();
+    }
+
+    while (!g_gameRunning && g_gameOver)
+    {
+        // GAME OVER SCREEN
+        pollGameOver();
+    }
+
+    while (g_gameRunning)
+    {
+        // GAME SCREEN
+        if (!g_screenDrawn)
+        {
+            drawGameBoard();
+        }
+        pollSnakePos();
+    }
+}
+
+void drawGameBoard()
+{
+    tft.fillScreen(BLACK);
+    tft.drawRect(0,0,320,240,WHITE);
+    // Draw the snake starting in the middle of the screen
+    tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    g_screenDrawn = true;
+}
+
+void drawGameOver()
+{
+    tft.fillScreen(BLACK);
+    // create buttons
+    resetButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Restart?", BUTTON_TEXTSIZE);
+    resetButton.drawButton();
+}
+
+void drawMainMenu()
+{
+    tft.fillScreen(BLACK);
+    // create buttons
+    startButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Start!", BUTTON_TEXTSIZE);
+    startButton.drawButton();
+}
+
+void pollGameOver()
+{
+    // GAME OVER SCREEN
+    TSPoint p = ts.getPoint();
+    // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
+    pinMode(XM, OUTPUT);
+    pinMode(YP, OUTPUT);
+    if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
+    {
+        // scale from 0->1023 to tft.width
+        p.x = (tft.width() - map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
+        p.y = (tft.height()-map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
+    }
+
+    if (resetButton.contains(p.x, p.y))
+    {
+        resetButton.press(true);
+    }
+    else
+    {
+        resetButton.press(false);
+    }
+
+    if (resetButton.justPressed())
+    {
+        Serial.println("Reset button pressed!");
+        resetButton.drawButton(true);
+        delay(100);
+        while (ts.isTouching())
+        {
+            // Loop here aimlessly if we're holding the start button
+        }
+        
+    }
+
+    if (resetButton.justReleased())
+    {
+        // Force a game screen redraw
+        g_screenDrawn = false;
+        g_gameRunning = true;
+        resetSnakePos();
+    }
+}
+
+void pollMainMenu()
+{
         // START SCREEN
         TSPoint p = ts.getPoint();
-        // We should be able to remove the two below lines now that the library should clean up pins behind the scenes
-        //pinMode(XM, OUTPUT);
-        //pinMode(YP, OUTPUT);
         if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
         {
             // scale from 0->1023 to tft.width
@@ -77,90 +165,30 @@ void loop()
         {
             g_gameRunning = true;
         }
-    }
-
-    while (!g_gameRunning && g_gameOver)
-    {
-        // GAME OVER SCREEN
-        drawGameOver();
-    }
-
-    while (g_gameRunning)
-    {
-        // GAME SCREEN
-        if (!g_screenDrawn)
-        {
-            drawGameBoard();
-        }
-        pollSnakePos();
-    }
-
 }
-
-void drawGameBoard()
-{
-    tft.fillScreen(BLACK);
-    tft.drawRect(0,0,320,240,WHITE);
-    // Draw the snake starting in the middle of the screen
-    tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
-    g_screenDrawn = true;
-}
-
-void drawGameOver()
-{
-    tft.fillScreen(BLACK);
-    // create buttons
-    resetButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Restart?", BUTTON_TEXTSIZE);
-    resetButton.drawButton();
-
-    // START SCREEN
-    TSPoint p = ts.getPoint();
-    // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
-    pinMode(XM, OUTPUT);
-    pinMode(YP, OUTPUT);
-    if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
-    {
-        // scale from 0->1023 to tft.width
-        p.x = (tft.width() - map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
-        p.y = (tft.height()-map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
-    }
-
-    if (resetButton.contains(p.x, p.y))
-    {
-        resetButton.press(true);
-    }
-    else
-    {
-        resetButton.press(false);
-    }
-
-    if (resetButton.justPressed())
-    {
-        Serial.println("Reset button pressed!");
-        resetButton.drawButton(true);
-        delay(100);
-    }
-
-    if (resetButton.justReleased())
-    {
-        g_gameRunning = true;
-    }
-}
-
-void drawMainMenu()
-{
-    tft.fillScreen(BLACK);
-    // create buttons
-    startButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Start!", BUTTON_TEXTSIZE);
-    startButton.drawButton();
-}
-
 void pollSnakePos()
 {
     g_snakeHeadX += g_velocity;
     Serial.println (g_snakeHeadX);
     // Move our snake horizontally
     tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+
     // Erase path behind the snake horizontally
     tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-g_velocity, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+
+    // Check if we've touched the walls
+    if (g_snakeHeadX == 0 || g_snakeHeadX == 320 || g_snakeHeadY == 0 || g_snakeHeadY == 240)
+    {
+        g_gameOver = true;
+        g_gameRunning = false;
+        drawGameOver();
+    }
+}
+
+void resetSnakePos()
+{
+    // Reset snake to the starting position
+    // Set where our snake will be starting
+    g_snakeHeadX = tft.width()/2;
+    g_snakeHeadY = tft.height()/2;
 }
