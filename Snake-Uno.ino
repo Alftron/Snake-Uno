@@ -32,9 +32,7 @@ void setup()
     tft.setRotation(LANDSCAPE_USBL);
     g_gameRunning = false;
     drawMainMenu();
-    // Set where our snake will be starting
-    g_snakeHeadX = tft.width()/2;
-    g_snakeHeadY = tft.height()/2;
+    resetSnakePos();
 }
 
 void loop()
@@ -90,9 +88,6 @@ void pollGameOver()
 {
     // GAME OVER SCREEN
     TSPoint p = ts.getPoint();
-    // For some reason if we're sharing pins like we do on the shield we need to force the pinmodes on shared pins
-    pinMode(XM, OUTPUT);
-    pinMode(YP, OUTPUT);
     if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
     {
         // scale from 0->1023 to tft.width
@@ -117,8 +112,7 @@ void pollGameOver()
         while (ts.isTouching())
         {
             // Loop here aimlessly if we're holding the reset button
-        }
-        
+        }  
     }
 
     if (resetButton.justReleased())
