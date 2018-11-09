@@ -15,19 +15,30 @@ Elegoo_GFX_Button startButton, resetButton;
 // For the one we're using, its 300 ohms across the X plate
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
+enum en_snakeDirection
+{
+    START,
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 // Globals
 bool g_screenDrawn = false;
 bool g_gameRunning = false;
 bool g_gameOver = false;
 int g_snakeHeadX;
 int g_snakeHeadY;
-int g_velocity = 1;
+en_snakeDirection g_snakeDirection = START;
 
 // Functions
 void drawGameBoard();
 void drawGameOver();
 void drawMainMenu();
+void moveSnakePos(int dirX, int dirY);
 void pollGameOver();
+void pollInput();
 void pollMainMenu();
 void pollSnakePos();
 void resetSnakePos();
@@ -94,6 +105,21 @@ void drawMainMenu()
     startButton.drawButton();
 }
 
+void moveSnakePos(int dirX, int dirY)
+{
+    // Move the snake on X axis
+    tft.fillRect(g_snakeHeadX += dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+
+    // Move the snake on Y axis
+    tft.fillRect(g_snakeHeadX, g_snakeHeadY += dirY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+
+    // Erase path behind the snake on X axis
+    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+
+    // Erase path behind the snake on Y axis
+    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirY, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+}
+
 void pollGameOver()
 {
     // GAME OVER SCREEN
@@ -128,6 +154,29 @@ void pollGameOver()
     if (resetButton.justReleased())
     {
         restartGame();
+    }
+}
+
+void pollInput()
+{
+    // We want to look at the four sides of the screen and using a threshold detect which direction was pressed and update the snake direction
+    // RUNNING GAME SCREEN
+    TSPoint p = ts.getPoint();
+
+    // Perhaps we should only attempt to do anything if the screen is being touched?
+    while (ts.isTouching())
+    {
+        if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
+        {
+            // scale from 0->1023 to tft.width
+            p.x = (tft.width() - map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
+            p.y = (tft.height() - map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
+        }
+
+        Serial.println("X value is:");
+        Serial.println(p.x);
+        Serial.println("Y value is:");
+        Serial.println(p.y);
     }
 }
 
@@ -170,13 +219,29 @@ void pollMainMenu()
 
 void pollSnakePos()
 {
-    g_snakeHeadX += g_velocity;
-    Serial.println (g_snakeHeadX);
-    // Move our snake horizontally
-    tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    // Check on the user input
+    pollInput();
 
-    // Erase path behind the snake horizontally
-    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-g_velocity, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+    // Move the snake depending on the direction
+    switch (g_snakeDirection)
+    {
+        case START:
+            // We've just started the game so don't move the snake
+            moveSnakePos(0, 0);
+            break;
+        case UP:
+            moveSnakePos(0, 1);
+            break;
+        case DOWN:
+            moveSnakePos(0, -1);
+            break;
+        case LEFT:
+            moveSnakePos(-1, 0);
+            break;
+        case RIGHT:
+            moveSnakePos(1, 0);
+            break;
+    }
 
     // Check if we've touched the walls
     if (g_snakeHeadX == 0 || g_snakeHeadX == 320 || g_snakeHeadY == 0 || g_snakeHeadY == 240)

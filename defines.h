@@ -53,4 +53,3 @@ y = map(p.x, TOP=108, BOT=919, 0, 240)
 
 // Snake defines
 #define SNAKEHEADSIZE 10
-#define MAXVELOCITY 10
