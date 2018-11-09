@@ -231,10 +231,10 @@ void pollSnakePos()
             moveSnakePos(0, 0);
             break;
         case UP:
-            moveSnakePos(0, 1);
+            moveSnakePos(0, -1);
             break;
         case DOWN:
-            moveSnakePos(0, -1);
+            moveSnakePos(0, 1);
             break;
         case LEFT:
             moveSnakePos(-1, 0);
