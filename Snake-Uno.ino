@@ -264,7 +264,7 @@ void pollSnakePos()
     pollInput();
 
     // Check if we've touched the walls
-    if (g_snakeHeadX == 1 || g_snakeHeadX == tft.width() || g_snakeHeadY == 1 || g_snakeHeadY == tft.height())
+    if (g_snakeHeadX == 0 || g_snakeHeadX == tft.width()-SNAKEHEADSIZE || g_snakeHeadY == 0 || g_snakeHeadY == tft.height()-SNAKEHEADSIZE)
     {
         g_gameOver = true;
         g_gameRunning = false;
