@@ -31,7 +31,6 @@ bool g_gameOver = false;
 int g_snakeHeadX;
 int g_snakeHeadY;
 en_snakeDirection g_snakeDirection = START;
-en_snakeDirection g_prevsnakeDirection = START;
 int g_cycleCount = 0;
 
 // Functions
