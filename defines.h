@@ -46,10 +46,18 @@ y = map(p.x, TOP=108, BOT=919, 0, 240)
 // Touchscreen defines
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000
+// Possibly portrait definitions?
+/*
 #define TS_MINX 70
 #define TS_MAXX 920
 #define TS_MINY 120
 #define TS_MAXY 900
+*/
+// Possibly landscape definitions?
+#define TS_MINY 70
+#define TS_MAXY 920
+#define TS_MINX 120
+#define TS_MAXX 900
 
 // Snake defines
 #define SNAKEHEADSIZE 10

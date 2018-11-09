@@ -36,6 +36,7 @@ en_snakeDirection g_snakeDirection = START;
 void drawGameBoard();
 void drawGameOver();
 void drawMainMenu();
+void initDisplay();
 void moveSnakePos(int dirX, int dirY);
 void pollGameOver();
 void pollInput();
@@ -43,14 +44,12 @@ void pollMainMenu();
 void pollSnakePos();
 void resetSnakePos();
 void restartGame();
+void setDirection();
 
 void setup()
 {
-    Serial.begin(9600);
-    Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
-    tft.reset();
-    tft.begin(LCDIDENTIFIER);
-    tft.setRotation(LANDSCAPE_USBL);
+    Serial.begin(115200);
+    initDisplay();
     g_gameRunning = false;
     drawMainMenu();
     resetSnakePos();
@@ -103,6 +102,14 @@ void drawMainMenu()
     // create buttons
     startButton.initButton(&tft, tft.width()/2, tft.height()/2, BUTTON_W, BUTTON_H, WHITE, BLACK, WHITE, "Start!", BUTTON_TEXTSIZE);
     startButton.drawButton();
+}
+
+void initDisplay()
+{
+    Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
+    tft.reset();
+    tft.begin(LCDIDENTIFIER);
+    tft.setRotation(LANDSCAPE_USBL);
 }
 
 void moveSnakePos(int dirX, int dirY)
@@ -164,19 +171,13 @@ void pollInput()
     TSPoint p = ts.getPoint();
 
     // Perhaps we should only attempt to do anything if the screen is being touched?
-    while (ts.isTouching())
+    if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
     {
-        if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
-        {
-            // scale from 0->1023 to tft.width
-            p.x = (tft.width() - map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
-            p.y = (tft.height() - map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
-        }
-
-        Serial.println("X value is:");
-        Serial.println(p.x);
-        Serial.println("Y value is:");
-        Serial.println(p.y);
+        // Swap the x and y axis because of the setRotation
+        int temp = p.x;
+        p.x = p.y;
+        p.y = temp;
+        setDirection(p.x, p.y);
     }
 }
 
@@ -266,5 +267,37 @@ void restartGame()
     // Force a game screen redraw
     g_screenDrawn = false;
     g_gameRunning = true;
+    g_snakeDirection = START;
     resetSnakePos();
+}
+
+void setDirection(int x, int y)
+{
+    /*
+    Left middle is x=127 y=508
+    Right middle is x=883 y=564
+    Up middle is x=520 y=176
+    Bottom middle is x=520 y=850
+    */
+   if (x <= 150)
+   {
+       // Moving left
+       g_snakeDirection = LEFT;
+   }
+   else if (x >= 850)
+   {
+       // Moving right
+       g_snakeDirection = RIGHT;
+   }
+   else if (y <= 200)
+   {
+       // Moving up
+       g_snakeDirection = UP;
+   }
+   else if (y >= 800)
+   {
+       // Moving down
+       g_snakeDirection = DOWN;
+   }
+   Serial.println(g_snakeDirection);
 }
