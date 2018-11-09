@@ -119,17 +119,27 @@ void moveSnakePos(int dirX, int dirY)
 {
     if (g_cycleCount % UPDATETIME == 0)
     {
-        // Move the snake on X axis
-        tft.fillRect(g_snakeHeadX += dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+        g_snakeHeadX += dirX;
+        g_snakeHeadY += dirY;
+        // Move the snake
+        tft.fillRect(g_snakeHeadX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
 
-        // Move the snake on Y axis
-        tft.fillRect(g_snakeHeadX, g_snakeHeadY += dirY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
-
-        // Erase path behind the snake on X axis
-        tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
-
-        // Erase path behind the snake on Y axis
-        tft.fillRect((g_snakeHeadY-SNAKEHEADSIZE)-dirY, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+        // Erase path behind the snake
+        switch (g_snakeDirection)
+        {
+            case UP:
+                tft.fillRect(g_snakeHeadX, g_snakeHeadY + SNAKEHEADSIZE, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+                break;
+            case DOWN:
+                tft.fillRect(g_snakeHeadX, g_snakeHeadY - SNAKEHEADSIZE, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+                break;
+            case LEFT:
+                tft.fillRect(g_snakeHeadX + SNAKEHEADSIZE, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+                break;
+            case RIGHT:
+                tft.fillRect(g_snakeHeadX - SNAKEHEADSIZE, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+                break;
+        }
     }
 }
 
@@ -251,7 +261,7 @@ void pollSnakePos()
     }
 
     // Check if we've touched the walls
-    if (g_snakeHeadX == 0 || g_snakeHeadX == 320 || g_snakeHeadY == 0 || g_snakeHeadY == 240)
+    if (g_snakeHeadX == 1 || g_snakeHeadX == tft.width() || g_snakeHeadY == 1 || g_snakeHeadY == tft.height())
     {
         g_gameOver = true;
         g_gameRunning = false;

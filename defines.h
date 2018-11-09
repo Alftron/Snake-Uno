@@ -61,4 +61,4 @@ y = map(p.x, TOP=108, BOT=919, 0, 240)
 
 // Snake defines
 #define SNAKEHEADSIZE 10
-#define UPDATETIME 20
+#define UPDATETIME 40
