@@ -31,6 +31,7 @@ bool g_gameOver = false;
 int g_snakeHeadX;
 int g_snakeHeadY;
 en_snakeDirection g_snakeDirection = START;
+en_snakeDirection g_prevsnakeDirection = START;
 int g_cycleCount = 0;
 
 // Functions
@@ -109,7 +110,6 @@ void drawMainMenu()
 
 void initDisplay()
 {
-    Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
     tft.reset();
     tft.begin(LCDIDENTIFIER);
     tft.setRotation(LANDSCAPE_USBL);
@@ -219,7 +219,6 @@ void pollMainMenu()
 
         if (startButton.justPressed())
         {
-            Serial.println("Start button pressed!");
             startButton.drawButton(true);
             delay(100);
             while (ts.isTouching())
@@ -301,22 +300,33 @@ void setDirection(int x, int y)
    if (x <= 150)
    {
        // Moving left
-       g_snakeDirection = LEFT;
+       if (g_snakeDirection != RIGHT)
+       {
+           g_snakeDirection = LEFT;
+       }
    }
    else if (x >= 850)
    {
        // Moving right
-       g_snakeDirection = RIGHT;
+       if (g_snakeDirection != LEFT)
+       {
+           g_snakeDirection = RIGHT;
+       }
    }
    else if (y <= 200)
    {
        // Moving up
-       g_snakeDirection = UP;
+       if (g_snakeDirection != DOWN)
+       {
+           g_snakeDirection = UP;
+       }
    }
    else if (y >= 800)
    {
        // Moving down
-       g_snakeDirection = DOWN;
+       if (g_snakeDirection != UP)
+       {
+           g_snakeDirection = DOWN;
+       }
    }
-   Serial.println(g_snakeDirection);
 }
