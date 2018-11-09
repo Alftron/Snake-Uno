@@ -31,6 +31,7 @@ bool g_gameOver = false;
 int g_snakeHeadX;
 int g_snakeHeadY;
 en_snakeDirection g_snakeDirection = START;
+int g_cycleCount = 0;
 
 // Functions
 void drawGameBoard();
@@ -57,6 +58,7 @@ void setup()
 
 void loop()
 {
+    g_cycleCount = 0;
     while (!g_gameRunning && !g_gameOver)
     {
         pollMainMenu();
@@ -75,6 +77,7 @@ void loop()
         {
             drawGameBoard();
         }
+        g_cycleCount++;
         pollSnakePos();
     }
 }
@@ -114,17 +117,20 @@ void initDisplay()
 
 void moveSnakePos(int dirX, int dirY)
 {
-    // Move the snake on X axis
-    tft.fillRect(g_snakeHeadX += dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+    if (g_cycleCount % UPDATETIME == 0)
+    {
+        // Move the snake on X axis
+        tft.fillRect(g_snakeHeadX += dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
 
-    // Move the snake on Y axis
-    tft.fillRect(g_snakeHeadX, g_snakeHeadY += dirY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
+        // Move the snake on Y axis
+        tft.fillRect(g_snakeHeadX, g_snakeHeadY += dirY, SNAKEHEADSIZE, SNAKEHEADSIZE, WHITE);
 
-    // Erase path behind the snake on X axis
-    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+        // Erase path behind the snake on X axis
+        tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirX, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
 
-    // Erase path behind the snake on Y axis
-    tft.fillRect((g_snakeHeadX-SNAKEHEADSIZE)-dirY, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+        // Erase path behind the snake on Y axis
+        tft.fillRect((g_snakeHeadY-SNAKEHEADSIZE)-dirY, g_snakeHeadY, SNAKEHEADSIZE, SNAKEHEADSIZE, BLACK);
+    }
 }
 
 void pollGameOver()
