@@ -260,6 +260,9 @@ void pollSnakePos()
             break;
     }
 
+    // Check on the user input again, to make it more response.....maybe
+    pollInput();
+
     // Check if we've touched the walls
     if (g_snakeHeadX == 1 || g_snakeHeadX == tft.width() || g_snakeHeadY == 1 || g_snakeHeadY == tft.height())
     {
