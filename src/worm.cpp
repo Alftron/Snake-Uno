@@ -6,6 +6,7 @@ Worm::Worm(int x, int y, Direction originalDirection) {
     this->y = y;
     this->direction = originalDirection;
     this->grow = false;
+	this->worm.push_back(new Piece(x, y));
 }
 
 Direction Worm::getDirection() {

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-Apple::Apple(int x, int y) {
-    this->x = x;
-    this->y = y;
+Apple::Apple(int x1, int y1) {
+    this->x = x1;
+    this->y = y1;
 }

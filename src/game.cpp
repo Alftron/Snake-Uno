@@ -5,6 +5,8 @@ Game::Game(int width, int height) {
 	this->width = width;
 	this->height = height;
     this->continues = true;
+    createApple();
+    this->worm = new Worm(width/2, height/2, Direction::DOWN);
 }
 
 bool Game::continueGame() {
@@ -19,18 +21,14 @@ int Game::getWidth() {
     return this->width;
 }
 
-Apple Game::getApple() {
+void Game::createApple() {
+    this->apple = new Apple(0,0);
+}
+
+Apple *Game::getApple() {
     return this->apple;
 }
 
-Worm Game::getWorm() {
+Worm *Game::getWorm() {
     return this->worm;
-}
-
-void Game::setApple(Apple apple) {
-    this->apple = apple;
-}
-
-void Game::setWorm(Worm worm) {
-    this->worm = worm;
 }

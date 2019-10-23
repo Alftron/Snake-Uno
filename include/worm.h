@@ -4,6 +4,7 @@
 
 #include "piece.h"
 #include "direction.h"
+#include <ArduinoSTL.h>
 
 class Worm : Piece {
 	public:
@@ -15,6 +16,7 @@ class Worm : Piece {
 	private:
         Direction direction;
         bool grow;
+		std::vector<Piece> worm;
 
 	protected:
 };

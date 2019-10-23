@@ -4,7 +4,7 @@
 
 class Piece {
     public:
-        Piece();
+        Piece(int x, int y);
         int getX();
         int getY();
         bool runsInto(Piece piece);

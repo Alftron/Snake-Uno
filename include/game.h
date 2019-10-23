@@ -4,25 +4,24 @@
 
 #include "apple.h"
 #include "worm.h"
+#include "direction.h"
 
 class Game {
-
     public:
 		Game(int width, int height);
         bool continueGame();
         int getHeight();
         int getWidth();
-        Apple getApple();
-        Worm getWorm();
-        void setApple(Apple apple);
-        void setWorm(Worm worm);
+        void createApple();
+        Apple* getApple();
+        Worm* getWorm();
 
     private:
         int width;
         int height;
         bool continues;
-        Apple apple;
-        Worm worm;
+        Apple* apple;
+        Worm* worm;
 
     protected:
     

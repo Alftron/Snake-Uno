@@ -9,8 +9,10 @@ void setup() {
 }
 
 void loop() {
+    /*
     Game game = Game(300, 200);
-    while (game.continues()) {
+    while (game.continueGame()) {
         // In the main game loop here
     }
+    */
 }
