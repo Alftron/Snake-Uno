@@ -5,10 +5,14 @@ Piece::Piece() {
     
 }
 
-void Piece::setX(int num) {
-    this->x = num;
+int Piece::getX() {
+    return this->x;
 }
 
-void Piece::setY(int num) {
-    this->y = num;
+int Piece::getY() {
+    return this->y;
+}
+
+bool Piece::runsInto(Piece piece) {
+    return this->getX() == piece.getX() && this->getY() == piece.getY();
 }

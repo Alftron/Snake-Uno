@@ -9,6 +9,13 @@ class Game {
 
     public:
 		Game(int width, int height);
+        bool continueGame();
+        int getHeight();
+        int getWidth();
+        Apple getApple();
+        Worm getWorm();
+        void setApple(Apple apple);
+        void setWorm(Worm worm);
 
     private:
         int width;
@@ -18,7 +25,6 @@ class Game {
         Worm worm;
 
     protected:
-
     
 };
 

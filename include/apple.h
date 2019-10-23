@@ -7,11 +7,9 @@
 
 class Apple : Piece {
     public:
-        Apple();
+        Apple(int x, int y);
 
     private:
-        int randomX;
-        int randomY;
 
     protected:
         
